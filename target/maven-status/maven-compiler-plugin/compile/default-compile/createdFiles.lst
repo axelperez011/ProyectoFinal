@@ -1,0 +1,9 @@
+modelo\ClientesLugar.class
+modelo\ClientesLugarDAO.class
+modelo\usuarios.class
+modelo\usuariosDAO.class
+modelo\EventosDAO.class
+modelo\item.class
+config\Conexion.class
+controlador\Controlador.class
+modelo\Eventos.class

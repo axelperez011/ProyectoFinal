@@ -24,152 +24,118 @@ public class EventosDAO {
         
         PreparedStatement ps;
         ResultSet rs;
-        
         List<Eventos> lista = new ArrayList<>();
         
         try{
-            
-            ps = conexion.prepareStatement("SELECT id,nombre_evento,nombre_persona,fecha,hora FROM eventos");
-            
+            String consulta= "SELECT eventos.*, clientes.nombre, clientes.telefono, lugar.nombre lugar "
+                    + "FROM eventos, clientes, lugar "
+                    + "WHERE eventos.id_cliente = clientes.id "
+                    + "AND eventos.id_lugar = lugar.id;";
+            ps = conexion.prepareStatement(consulta);
             rs = ps.executeQuery();
             
             while(rs.next()){
-                
                 int id = rs.getInt("id");
-                String evento = rs.getString("nombreEvento");
-                String persona = rs.getString("nombrePersona");
+                String evento = rs.getString("nombre_evento");
+                int idCliente = rs.getInt("id_cliente");
+                String persona = rs.getString("nombre");
+                String telefono = rs.getString("telefono");
                 String fecha = rs.getString("fecha");
                 String hora = rs.getString("hora");
+                String horaFin = rs.getString("hora_fin");
+                int idLugar = rs.getInt("id_lugar");
+                String lugar = rs.getString("lugar");
                 
-                Eventos eventos = new Eventos(id,evento,persona,fecha,hora);
+                Eventos eventos = new Eventos(id,evento,idCliente,persona,telefono,fecha,hora,horaFin,idLugar,lugar);
                 
                 lista.add(eventos);
-                        
             }
-            
             return lista;
-            
         } catch(SQLException e) {
-        
             System.out.println(e.toString());
-            
-            return null;
-    }
-} 
-    
-    public Eventos mostrarEvento(int _id){
-        
-        PreparedStatement ps;
-        ResultSet rs;
-        
-        Eventos evento = null;
-        
-        try{
-            
-            ps = conexion.prepareStatement("SELECT id,nombre_evento,nombre_persona,fecha,hora FROM eventos WHERE id=?");
-            
-            ps.setInt(1,_id);
-            rs = ps.executeQuery();
-            
-            while(rs.next()){
-                
-                int id = rs.getInt("id");
-                String nomevento = rs.getString("nombreEvento");
-                String persona = rs.getString("nombrePersona");
-                String fecha = rs.getString("fecha");
-                String hora = rs.getString("hora");
-                
-                evento = new Eventos(id,nomevento,persona,fecha,hora);
-                
-                                      
-            }
-            
-            return evento;
-            
-        } catch(SQLException e) {
-        
-            System.out.println(e.toString());
-            
             return null;
     }
 } 
 
-    public boolean insertar(Eventos evento){
-        
+    public int insertar(Eventos evento){
+        int guardado;
         PreparedStatement ps;
-      
         
+        String sql = "INSERT INTO eventos(nombre_evento,id_cliente,fecha,hora,hora_fin,id_lugar) "
+                + "VALUES('"+evento.getNomEvento()+"', '"+evento.getId_cliente()+"',"
+                + "'"+evento.getFecha()+"', '"+evento.getHora()+"','"+evento.getHoraFin()+"', '"+evento.getId_lugar()+"')";
+
         try{
-            
-            ps = conexion.prepareStatement("INSERT INTO eventos (nombre_evento,nombre_persona,fecha,hora) VALUES (?,?,?,?)");
-            
-            ps.setString(1, evento.getNomEvento());
-            ps.setString(2, evento.getNomPersona());
-            ps.setString(3, evento.getFecha());
-            ps.setString(4, evento.getHora());
-            
-            
-            ps.execute();
-            
-            return true;
-            
+            ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+            guardado =  1;
+                        
         } catch(SQLException e) {
-        
+            if (e.getErrorCode() == 1062) {
+                guardado = e.getErrorCode();
+            }else{guardado = 0;}
+        }
+         return guardado;
+    }
+    
+    public int actualizar(Eventos evento){
+        int guardado;
+        String sql = "UPDATE eventos SET nombre_evento='"+evento.getNomEvento()+"',"
+                + " id_cliente='"+evento.getId_cliente()+"',"
+                + " fecha='"+evento.getFecha()+"',"
+                + " hora='"+evento.getHora()+"',"
+                + " hora_fin='"+evento.getHoraFin()+"',"
+                + " id_lugar='"+evento.getId_lugar()+"'"
+                + "WHERE id = '"+evento.getId()+"'";
+        PreparedStatement ps;
+        try{
+            ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+            guardado = 1;
+        } catch(SQLException e) {
+            if (e.getErrorCode() == 1062) {
+                guardado = e.getErrorCode();
+            }else{guardado = 0;}
+        }
+        return guardado;
+    }
+    
+    public boolean eliminar(int id){
+        String sql = "DELETE FROM eventos WHERE id=?";
+        PreparedStatement ps;
+        try{
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return true;
+        } catch(SQLException e) {
             System.out.println(e.toString());
-            
             return false;
         }
     }
     
-    public boolean actualizar(Eventos evento){
-        
+     public List<item> obtenerOpciones(String tabla){
         PreparedStatement ps;
-      
+        ResultSet rs;
+        String sql = "SELECT * FROM "+tabla+" ";
         
-        try{
-            
-            ps = conexion.prepareStatement("UPDATE eventos SET nombre_evento=?,nombre_persona=?,fecha=?,hora=? WHRE id=?");
-            
-            ps.setString(1, evento.getNomEvento());
-            ps.setString(2, evento.getNomPersona());
-            ps.setString(3, evento.getFecha());
-            ps.setString(4, evento.getHora());
-            ps.setInt(5, evento.getId());
-            
-            ps.execute();
-            
-            return true;
-            
-        } catch(SQLException e) {
-        
+        List<item> it = new ArrayList();
+           try{
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()){
+               int id = rs.getInt("id");
+               String nombre = rs.getString("nombre");
+               item i = new item(id,nombre);
+               it.add(i);
+            }
+            return it;
+        } catch(SQLException e) {   
             System.out.println(e.toString());
-            
-            return false;
+            return null;
         }
     }
     
-    public boolean eliminar(int _id){
-        
-        PreparedStatement ps;
-      
-        
-        try{
-            
-            ps = conexion.prepareStatement("DELETE FROM eventos WHRE id=?");
-            
-            ps.setInt(1, _id);
-            
-            ps.execute();
-            
-            return true;
-            
-        } catch(SQLException e) {
-        
-            System.out.println(e.toString());
-            
-            return false;
-        }
-    }
     
     
 }

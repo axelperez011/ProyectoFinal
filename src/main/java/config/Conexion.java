@@ -7,12 +7,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Conexion {
-
+    Connection conexion;
     public Connection getConexion() {
         try {
 
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3307/registro?serverTimezone=UTC", "root", "12345");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/registros", "root", "Duraznito117");
             System.out.println("Conexion exitosa");
             return conexion;
 
@@ -23,6 +23,9 @@ public class Conexion {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+    public void cerrarConexion() throws SQLException{
+        conexion.close();
     }
 
 }
