@@ -1,7 +1,7 @@
 <%-- 
     Document   : insertar
     Created on : 24/10/2024, 12:26:24 PM
-    Author     : Antonio
+    Author     : axel
 --%>
 
 <%@page import="modelo.item"%>
@@ -148,13 +148,13 @@
                 </select>
 
                 <label for="fecha">Fecha</label>
-                <input type="date" id="fecha" name="fecha" value="${fecha}"  required>
+                <input type="date" id="fecha" name="fecha" value="${fecha}"  disabled required>
                 
                 <label for="hora">Hora Inicio</label>
-                <input type="time" id="hora" name="hora" value="${hora}"  required>
+                <input type="time" id="hora" name="hora" value="${hora}" disabled required>
                 
                 <label for="hora_fin">Hora Termino</label>
-                <input type="time" id="hora_fin" name="hora_fin" value="${horaFin}"  required>
+                <input type="time" id="hora_fin" name="hora_fin" value="${horaFin}" disabled required>
                 
                 <label for="lugar">Lugar</label>
                   <select id="lugar" name="lugar" >

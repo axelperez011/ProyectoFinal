@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
     Created on : 4 nov 2024, 7:24:33 p.m.
-    Author     : Miguel
+    Author     : axel
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

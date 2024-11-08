@@ -1,7 +1,7 @@
 <%-- 
     Document   : index
     Created on : 24/10/2024, 12:26:45 PM
-    Author     : Antonio
+    Author     : axel
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -62,7 +62,7 @@
          <div class="form-container">
             <h2>${ mensaje }</h2>
             <form action="Controlador" method="get">
-                 <input type="submit" name="accion" value="Atras" class="button">
+                 <input type="submit" name="accion" value="Volver" class="button">
             </form>
         </div>
     </body>

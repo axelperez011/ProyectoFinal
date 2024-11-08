@@ -82,9 +82,6 @@ public class EventosDAO {
         int guardado;
         String sql = "UPDATE eventos SET nombre_evento='"+evento.getNomEvento()+"',"
                 + " id_cliente='"+evento.getId_cliente()+"',"
-                + " fecha='"+evento.getFecha()+"',"
-                + " hora='"+evento.getHora()+"',"
-                + " hora_fin='"+evento.getHoraFin()+"',"
                 + " id_lugar='"+evento.getId_lugar()+"'"
                 + "WHERE id = '"+evento.getId()+"'";
         PreparedStatement ps;
@@ -112,6 +109,27 @@ public class EventosDAO {
             System.out.println(e.toString());
             return false;
         }
+    }
+    
+    public boolean buscarDuplicado(Eventos e){
+        boolean encontrado = false;
+        String sql = "SELECT * FROM eventos WHERE ('"+e.getHora()+"' BETWEEN hora AND hora_fin)"
+                + "AND ('"+e.getHoraFin()+"' BETWEEN hora AND hora_fin)"
+                + "AND fecha = '"+e.getFecha()+"';";
+        
+        PreparedStatement ps;
+        ResultSet rs;
+        
+        try{
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                 encontrado = true;
+            }
+        } catch(SQLException ex) {
+            System.out.println(ex.toString());
+        }
+        return encontrado;
     }
     
      public List<item> obtenerOpciones(String tabla){

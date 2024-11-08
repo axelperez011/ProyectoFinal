@@ -23,7 +23,7 @@ import modelo.usuariosDAO;
 
 /**
  *
- * @author Miguel
+ * @author axel
  */
 public class Controlador extends HttpServlet {
     
@@ -253,15 +253,16 @@ public class Controlador extends HttpServlet {
             String horaFin = request.getParameter("hora_fin");
             int idLugar = Integer.parseInt(request.getParameter("lugar"));
             evento = new Eventos(nombre,idCliente,fecha,hora,horaFin,idLugar);
-            if(edao.insertar(evento) == 1){
-              vista = vistaExito;
-              String mensaje = "Evento Guardado";
-              request.setAttribute("mensaje", mensaje);
+            if (edao.buscarDuplicado(evento)) {
+                vista = vistaError;
+               String mensaje = "Este Evento se Empalma con Otro\n"
+                        +"Seleccione Otra Fecha u Otro Horario\n";
+                request.setAttribute("mensaje", mensaje);
             }else{
-                if (edao.insertar(evento) == 1062) {
-                    vista = vistaError;
-                    String mensaje = "Ya Se Asignó un Evento Con La Misma Fecha, Hora y Lugar";
-                    request.setAttribute("mensaje", mensaje);
+                if(edao.insertar(evento) == 1){
+                  vista = vistaExito;
+                  String mensaje = "Evento Guardado";
+                  request.setAttribute("mensaje", mensaje);
                 }else{
                     vista = vistaError;
                     String mensaje = "No Se Pudo Guardar";
@@ -273,29 +274,26 @@ public class Controlador extends HttpServlet {
             String nombre = request.getParameter("nombreEvento");
             int idCliente = Integer.parseInt(request.getParameter("cliente"));
             int id = Integer.parseInt(request.getParameter("id"));
-            
-            String fecha = request.getParameter("fecha");
-            String hora = request.getParameter("hora");
-            String horaFin = request.getParameter("hora_fin");
             int idLugar = Integer.parseInt(request.getParameter("lugar"));
-            evento = new Eventos(nombre,idCliente,fecha,hora,horaFin,idLugar);
-            evento.setId(id);
             
-             if (edao.actualizar(evento) == 1) {
-                vista = vistaExito;
-                String mensaje = "Evento Actualizado";
+            /*String fecha = request.getParameter("fecha");
+            String hora = request.getParameter("hora");
+            String horaFin = request.getParameter("hora_fin");*/
+            evento = new Eventos();
+            evento.setId(id);
+            evento.setNomEvento(nombre);
+            evento.setId_cliente(idCliente);
+            evento.setId_lugar(idLugar);
+           
+            if (edao.actualizar(evento) == 1) {
+               vista = vistaExito;
+               String mensaje = "Evento Actualizado";
+               request.setAttribute("mensaje", mensaje);
+            }else{
+                vista = vistaError;
+                String mensaje = "No Se Pudo Actualizar";
                 request.setAttribute("mensaje", mensaje);
-             }else{
-                if (edao.actualizar(evento) == 1062) {
-                     vista = vistaError;
-                    String mensaje = "Ya Se Asignó un Evento Con La Misma Fecha, Hora y Lugar";
-                    request.setAttribute("mensaje", mensaje);
-                }else{
-                    vista = vistaError;
-                    String mensaje = "No Se Pudo Actualizar";
-                    request.setAttribute("mensaje", mensaje);
-                }
-             }
+            }
         }
          if (accion.equalsIgnoreCase("Agregar")) {
             String nombre = request.getParameter("nombreCliente");
@@ -371,7 +369,7 @@ public class Controlador extends HttpServlet {
         RequestDispatcher reqVista = request.getRequestDispatcher(vista);
         reqVista.forward(request, response);
     }
-
+    
     /**
      * Returns a short description of the servlet.
      *

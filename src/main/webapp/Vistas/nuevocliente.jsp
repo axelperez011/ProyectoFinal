@@ -1,7 +1,7 @@
 <%-- 
     Document   : insertar
     Created on : 24/10/2024, 12:26:24 PM
-    Author     : Antonio
+    Author     : axel
 --%>
 
 <%@page import="modelo.ClientesLugarDAO"%>
@@ -180,7 +180,7 @@
                 <input type="text" id="nombre" name="nombreCliente" value="${nombre}" required>
 
                 <label for="telefono">Telefono</label>
-                <input type="text" id="telefono" name="telefono" value="${telefono}" required>
+                <input type="text" id="telefono" name="telefono" value="${telefono}" pattern="[0-9]{8}" maxlength="8" required>
                 
                
                 <a href="Controlador?accion=Volver" class="button2">Volver</a>
